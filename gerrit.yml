@@ -1,0 +1,50 @@
+---
+- name: install gerrit
+  hosts: all
+
+  vars:
+    gerrit_version: "2.10"
+
+  tasks:
+    - name: install packages
+      yum:
+        name={{item}}
+        state=present
+      with_items:
+        - java-1.7.0-openjdk
+
+    - name: create gerrit working directory
+      file:
+        state=directory
+        path=/opt/gerrit/{{item}}
+      with_items:
+        - downloads
+        - work
+
+    - name: download gerrit
+      get_url:
+        url=http://gerrit-releases.storage.googleapis.com/gerrit-{{gerrit_version}}.war
+        dest=/opt/gerrit/downloads
+
+    - name: install gerrit
+      shell: java -jar  /opt/gerrit/downloads/gerrit-{{gerrit_version}}.war init \
+        --batch \
+        -d /opt/gerrit/work
+    - name: change auth type
+      lineinfile:
+        dest=/opt/gerrit/work/etc/gerrit.config
+        regexp="type ="
+        line="\ttype = DEVELOPMENT_BECOME_ANY_ACCOUNT"
+    - name: install supervisord
+      yum:
+        name=supervisor
+        state=present
+    - name: configure supervisord
+      copy:
+        dest=/etc/supervisord.conf
+        content='[supervisord]\nnodaemon=true\n[program:gerrit]\ncommand=/bin/bash -c "/opt/gerrit/work/bin/gerrit.sh supervise -d /opt/gerrit/work"\n'
+
+
+
+
+
