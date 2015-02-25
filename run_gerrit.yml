@@ -4,8 +4,11 @@
   gather_facts: no
 
   vars:
-    data_src_dir: ~/work/git
-    data_dst_dir: /opt/gerrit/work/git
+    git_src_dir: /home/anton/work/my/volumes/gerrit/git
+    git_dst_dir: /opt/gerrit/work/git
+
+    db_src_dir:  /home/anton/work/my/volumes/gerrit/db
+    db_dst_dir:  /opt/gerrit/work/db
 
   tasks:
     - name: start docker container
@@ -15,5 +18,5 @@
         detach=yes
         ports="80:8080,29418:29418"
         state=running
-        volumes={{data_src_dir}}:{{data_dst_dir}}
+        volumes="{{git_src_dir}}:{{git_dst_dir}},{{db_src_dir}}:{{db_dst_dir}}"
 
