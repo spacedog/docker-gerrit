@@ -4,6 +4,7 @@
 
   vars:
     gerrit_version: "2.10"
+    gerrit_host: localhost
 
   tasks:
     - name: install packages
@@ -35,6 +36,11 @@
         dest=/opt/gerrit/work/etc/gerrit.config
         regexp="type ="
         line="\ttype = DEVELOPMENT_BECOME_ANY_ACCOUNT"
+    - name: change url
+      lineinfile:
+        dest=/opt/gerrit/work/etc/gerrit.config
+        regexp="canonicalWebUrl ="
+        line="\tcanonicalWebUrl = http://{{gerrit_host}}:8080/"
     - name: install supervisord
       yum:
         name=supervisor
