@@ -16,7 +16,7 @@
         image=abaranov/gerrit
         name=gerrit
         detach=yes
-        ports="80:8080,29418:29418"
+        ports="8080:8080,29418:29418"
         state=running
         volumes="{{git_src_dir}}:{{git_dst_dir}},{{db_src_dir}}:{{db_dst_dir}}"
 
