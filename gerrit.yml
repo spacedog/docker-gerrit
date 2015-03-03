@@ -44,7 +44,7 @@
     - name: configure supervisord
       copy:
         dest=/etc/supervisord.conf
-        content='[supervisord]\nnodaemon=true\n[program:gerrit]\ncommand=/start.sh\n'
+        content='[supervisord]\nnodaemon=true\n[program:gerrit]\ncommand=/bin/bash -c /start.sh\n'
 
 
 
