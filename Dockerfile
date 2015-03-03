@@ -2,6 +2,7 @@ FROM        abaranov/base
 MAINTAINER  abaranov@linux.com
 
 ADD         gerrit.yml /ansible/gerrit.yml
+ADD         start.sh /start.sh
 RUN         ansible-playbook /ansible/gerrit.yml
 RUN         rm -rf /ansible
 EXPOSE      8080 29418

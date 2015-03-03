@@ -4,6 +4,8 @@
 
   vars:
     gerrit_version: "2.10"
+    gerrit_work_dir: /opt/gerrit/work
+    gerrit_wget_dir: /opt/gerrit/downloads
 
   tasks:
     - name: install packages
@@ -16,25 +18,23 @@
     - name: create gerrit working directory
       file:
         state=directory
-        path=/opt/gerrit/{{item}}
-      with_items:
-        - downloads
-        - work
+        path={{gerrit_work_dir}}
+
+    - name: create gerrit download directory
+      file:
+        state=directory
+        path={{gerrit_wget_dir}}
 
     - name: download gerrit
       get_url:
         url=http://gerrit-releases.storage.googleapis.com/gerrit-{{gerrit_version}}.war
-        dest=/opt/gerrit/downloads
+        dest={{gerrit_wget_dir}}
 
     - name: install gerrit
-      shell: java -jar  /opt/gerrit/downloads/gerrit-{{gerrit_version}}.war init \
+      shell: java -jar  {{gerrit_wget_dir}}/gerrit-{{gerrit_version}}.war init \
         --batch \
-        -d /opt/gerrit/work
-    - name: change auth type
-      lineinfile:
-        dest=/opt/gerrit/work/etc/gerrit.config
-        regexp="type ="
-        line="\ttype = DEVELOPMENT_BECOME_ANY_ACCOUNT"
+        -d {{gerrit_work_dir}}
+
     - name: install supervisord
       yum:
         name=supervisor
@@ -42,7 +42,7 @@
     - name: configure supervisord
       copy:
         dest=/etc/supervisord.conf
-        content='[supervisord]\nnodaemon=true\n[program:gerrit]\ncommand=/bin/bash -c "/opt/gerrit/work/bin/gerrit.sh supervise -d /opt/gerrit/work"\n'
+        content='[supervisord]\nnodaemon=true\n[program:gerrit]\ncommand=/start.sh\n'
 
 
 
