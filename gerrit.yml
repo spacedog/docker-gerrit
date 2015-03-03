@@ -6,6 +6,7 @@
     gerrit_version: "2.10"
     gerrit_work_dir: /opt/gerrit/work
     gerrit_wget_dir: /opt/gerrit/downloads
+    gerrit_host: localhost
 
   tasks:
     - name: install packages
@@ -39,6 +40,7 @@
       yum:
         name=supervisor
         state=present
+
     - name: configure supervisord
       copy:
         dest=/etc/supervisord.conf
