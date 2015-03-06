@@ -15,6 +15,7 @@
         state=present
       with_items:
         - java-1.7.0-openjdk
+      notify: yum clean all
 
     - name: create gerrit working directory
       file:
@@ -40,11 +41,16 @@
       yum:
         name=supervisor
         state=present
+      notify: yum clean all
 
     - name: configure supervisord
       copy:
         dest=/etc/supervisord.conf
         content='[supervisord]\nnodaemon=true\n[program:gerrit]\ncommand=/bin/bash -c /start.sh\n'
+    
+  handlers:
+    - name: yum clean all
+      command: yum clean all
 
 
 
